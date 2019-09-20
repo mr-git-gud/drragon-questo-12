@@ -1,8 +1,8 @@
 new Vue({
     el: '#app',
     data: {
-        playerHP: "80%",
-        monsterHP: "80%",
+        playerHP: "0%",
+        monsterHP: "0%",
         playerDMG: 0,
         monsterDMG: 0,
         gameLogs: [],
