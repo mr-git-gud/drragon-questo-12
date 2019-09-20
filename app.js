@@ -11,13 +11,17 @@ new Vue({
         monsterAttkDmg: 0,
         herbCount: 5,
         pepPower: 2,
+        startText: "START NEW GAME",
+        giveUp: false
     },
     methods: {
         startoGemu(){
+            this.startText = "START NEW GAME";
             this.playerHP = "100%";
             this.monsterHP = "100%";
             this.playerHPText = "100";
             this.monsterHPText = "100";
+            this.giveUp = false;
             this.logNewEvent({message: "The hero goes forth!!", turn: "player-turn"});
             this.logNewEvent({message: "A wild slime appears!!", turn: "monster-turn"});
         },
@@ -25,16 +29,32 @@ new Vue({
             this.gameLogs.push(msg);
         },
         attack(){
-            if(parseInt(this.playerHP) > 0){
-                let calcMonsterHP = parseInt(this.monsterHP) - this.getDmg("player");
-                let calcPlayerHP = parseInt(this.playerHP) - this.getDmg("monster");
-                if(calcPlayerHP < 0) calcPlayerHP = 0;
-                if(calcMonsterHP < 0) calcMonsterHP = 0;
-                this.playerHP = calcPlayerHP + "%";
-                this.monsterHP = calcMonsterHP + "%";
-                this.logNewEvent({message: `The hero did ${this.playerAttkDmg} damage!`, turn: "player-turn"});
-                this.logNewEvent({message: `The slime did ${this.monsterAttkDmg} damage!`, turn: "monster-turn"});
-                this.checkWinStatus();
+            if(!this.giveUp){
+                if(parseInt(this.playerHP) > 0){
+                    let calcMonsterHP = parseInt(this.monsterHP) - this.getDmg("player");
+                    let calcPlayerHP = parseInt(this.playerHP) - this.getDmg("monster");
+                    if(calcPlayerHP < 0) calcPlayerHP = 0;
+                    if(calcMonsterHP < 0) calcMonsterHP = 0;
+                    this.playerHP = calcPlayerHP + "%";
+                    this.monsterHP = calcMonsterHP + "%";
+                    this.logNewEvent({message: `The hero did ${this.playerAttkDmg} damage!`, turn: "player-turn"});
+                    this.logNewEvent({message: `The slime did ${this.monsterAttkDmg} damage!`, turn: "monster-turn"});
+                    this.checkWinStatus();
+                }
+            }
+        },
+        specialAttack(){
+            if(!this.giveUp){
+                if(this.pepPower > 0){
+                    let calcMonsterHP =  parseInt(this.monsterHP) - this.getSpecialDmg();
+                    if(calcMonsterHP < 0) calcMonsterHP = 0;
+                    this.monsterHP = calcMonsterHP;
+                    this.logNewEvent({message: `CRITICAL HIT!!! The hero does ${this.playerAttkDmg} damage!`, turn: "player-turn"});
+                    this.logNewEvent({message: `The slime is stunned and can't attack!!!`, turn: "monster-turn"});
+                    this.pepPower -= 1;
+                } else {
+                    this.logNewEvent({message: `OUT OF PEP POWER. CAN'T USE SPECIAL ATTACK`, turn: "player-turn"});
+                }
             }
         },
         checkWinStatus(){
@@ -43,6 +63,11 @@ new Vue({
             } else if(parseInt(this.monsterHP) <= 0){
                 this.logNewEvent({message: "The slime fainted", turn: "player-turn"})
             }
+        },
+        getSpecialDmg(){
+            let calcDmg = Math.floor(Math.random() * 15) + 15;
+            this.playerAttkDmg = calcDmg;
+            return calcDmg;
         },
         getDmg(char){
             let calcDmg = Math.floor(Math.random() * 10);
@@ -58,15 +83,24 @@ new Vue({
              
         },
         playerUsesHerb(){
-            if(parseInt(this.playerHP) > 0){
-                if(this.herbCount > 0){
-                    this.playerHP = parseInt(this.playerHP) + this.calcHeal() - this.getDmg("monster") + "%";
-                    this.logNewEvent({message: `The hero uses medicinal herb. Gains ${this.playerHeal} hitpoints!`, turn: "player-turn"});
-                    this.logNewEvent({message: `The slime did ${this.monsterAttkDmg} while the hero was healing!!`, turn: "monster-turn"})
-                    this.herbCount -= 1;
-                } else {
-                    this.logNewEvent({message: `OUT OF HERBS!!!`, turn: "monster-turn"})
-                } 
+            if(!this.giveUp){
+                if(parseInt(this.playerHP) > 0){
+                    if(this.herbCount > 0){
+                        this.playerHP = parseInt(this.playerHP) + this.calcHeal() - this.getDmg("monster") + "%";
+                        this.logNewEvent({message: `The hero uses medicinal herb. Gains ${this.playerHeal} hitpoints!`, turn: "player-turn"});
+                        this.logNewEvent({message: `The slime did ${this.monsterAttkDmg} while the hero was healing!!`, turn: "monster-turn"})
+                        this.herbCount -= 1;
+                    } else {
+                        this.logNewEvent({message: `OUT OF HERBS!!!`, turn: "monster-turn"})
+                    } 
+                }
+            }
+        }, 
+        flee(){
+            if(!this.giveUp){
+                this.logNewEvent({message: "The hero flees to fight another day.", turn: "player-turn"});
+                this.startText = "CONTINUE???";
+                this.giveUp = true;
             }
         }
     }
