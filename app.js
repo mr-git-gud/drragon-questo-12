@@ -12,8 +12,9 @@ new Vue({
         herbCount: 5,
         pepPower: 2,
         startText: "START NEW GAME",
-        giveUp: false
-        
+        giveUp: false,
+        heroAttack: false,
+        monsterDamage: false
     },
     methods: {
         startoGemu(){
@@ -41,6 +42,12 @@ new Vue({
                     this.logNewEvent({message: `The hero did ${this.playerAttkDmg} damage!`, turn: "player-turn"});
                     this.logNewEvent({message: `The bandits did ${this.monsterAttkDmg} damage!`, turn: "monster-turn"});
                     this.checkWinStatus();
+                    this.heroAttack = true;
+                    this.monsterDamage = true;
+                    setTimeout(() => {
+                        this.heroAttack = false;
+                        this.monsterDamage = false;
+                    }, 1500)
                 }
             }
         },
