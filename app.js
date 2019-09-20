@@ -37,12 +37,24 @@ new Vue({
                 this.checkWinStatus();
             }
         },
+        specialAttack(){
+            let calcMonsterHP =  parseInt(this.monsterHP) - this.getSpecialDmg();
+            if(calcMonsterHP < 0) calcMonsterHP = 0;
+            this.monsterHP = calcMonsterHP;
+            this.logNewEvent({message: `CRITICAL HIT!!! The hero does ${this.playerAttkDmg} damage!`, turn: "player-turn"});
+            this.logNewEvent({message: `The slime is stunned and can't attack`, turn: "monster-turn"});
+        },
         checkWinStatus(){
             if(parseInt(this.playerHP) <= 0){
                 this.logNewEvent({message: "Oh no. The hero fainted! GAME OVER", turn: "monster-turn"});
             } else if(parseInt(this.monsterHP) <= 0){
                 this.logNewEvent({message: "The slime fainted", turn: "player-turn"})
             }
+        },
+        getSpecialDmg(){
+            let calcDmg = Math.floor(Math.random() * 15) + 15;
+            this.playerAttkDmg = calcDmg;
+            return calcDmg;
         },
         getDmg(char){
             let calcDmg = Math.floor(Math.random() * 10);
