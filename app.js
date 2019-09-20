@@ -14,10 +14,12 @@ new Vue({
         startText: "START NEW GAME",
         giveUp: false,
         heroAttack: false,
-        monsterDamage: false
+        monsterDamage: false,
+        gameRunning: false
     },
     methods: {
         startoGemu(){
+            this.gameRunning = true;
             this.startText = "START NEW GAME";
             this.playerHP = "100%";
             this.monsterHP = "100%";
@@ -60,6 +62,12 @@ new Vue({
                     this.logNewEvent({message: `CRITICAL HIT!!! The hero does ${this.playerAttkDmg} damage!`, turn: "player-turn"});
                     this.logNewEvent({message: `The bandit is stunned and can't attack!!!`, turn: "monster-turn"});
                     this.pepPower -= 1;
+                    this.heroAttack = true;
+                    this.monsterDamage = true;
+                    setTimeout(() => {
+                        this.heroAttack = false;
+                        this.monsterDamage = false;
+                    }, 1500)
                 } else {
                     this.logNewEvent({message: `OUT OF PEP POWER. CAN'T USE SPECIAL ATTACK`, turn: "player-turn"});
                 }
@@ -68,8 +76,10 @@ new Vue({
         checkWinStatus(){
             if(parseInt(this.playerHP) <= 0){
                 this.logNewEvent({message: "Oh no. The hero fainted! GAME OVER", turn: "monster-turn"});
+                this.gameRunning = false;
             } else if(parseInt(this.monsterHP) <= 0){
                 this.logNewEvent({message: "The bandits are defeated", turn: "player-turn"})
+                this.gameRunning = false;
             }
         },
         getSpecialDmg(){
@@ -107,6 +117,7 @@ new Vue({
         flee(){
             if(!this.giveUp){
                 this.logNewEvent({message: "The hero flees to fight another day.", turn: "player-turn"});
+                this.gameRunning = false;
                 this.startText = "CONTINUE???";
                 this.giveUp = true;
             }
