@@ -100,3 +100,46 @@ button {
     position: relative;
     left: 120px;
 }
+
+.blink {
+    animation: blink-animation 0.05s steps(5, start) 3;
+    -webkit-animation: blink-animation 0.5s steps(5, start) 3;
+  }
+  @keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
+  @-webkit-keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
+
+  .attack {
+    animation: shake 5 infinite;
+    -webkit-animation: shake 5 infinite;
+  }
+
+  @keyframes shake {
+	10%,
+	90% {
+		transform: translate3d(-1px, 0, 0);
+	}
+
+	20%,
+	80% {
+		transform: translate3d(1px, 0, 0);
+	}
+
+	30%,
+	50%,
+	70% {
+		transform: translate3d(-2px, 0, 0);
+	}
+
+	40%,
+	60% {
+		transform: translate3d(3px, 0, 0);
+	}
+}

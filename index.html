@@ -12,7 +12,7 @@
     <section class="row">
         <div class="small-6 columns">
             <h1 class="text-center">Hero</h1>
-            <img class="hero-sprite" src="Hero.png"/>
+            <img class="hero-sprite shake" src="Hero.png"/>
             <div class="healthbar">
                 <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;" :style="{width: playerHP}">
                     {{ parseInt(playerHP) > 100 ? 100 : parseInt(playerHP) }}
@@ -20,8 +20,8 @@
             </div>
         </div>
         <div class="small-6 columns">
-            <h1 class="text-center">Slime</h1>
-            <img class="bandits-sprite" src="Bandits.png"/>
+            <h1 class="text-center">Bandits</h1>
+            <img class="bandits-sprite blink" src="Bandits.png"/>
             <div class="healthbar" >
                 <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;" :style="{width: monsterHP}">
                     {{ parseInt(monsterHP) > 100 ? 100 : parseInt(monsterHP) }}
